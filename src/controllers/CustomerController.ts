@@ -43,6 +43,12 @@ export class CustomerController {
         phone,
         name,
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+      },
     });
 
     return res.status(201).json(customer);
@@ -69,10 +75,11 @@ export class CustomerController {
     if (!isValidPassword) {
       res.status(401).json({ message: "A senha esta incorreta!" });
     }
-    const token = jwt.sign({ id: user.id }, `${process.env.SECRET}`, {
+    const token = jwt.sign({ name: user.name, email: email, id: user.id }, `${process.env.SECRET}`, {
+
       expiresIn: "7d",
     });
-    const userSPasswor = delete user.passwordHash;
-    return res.json({ user, token });
+
+    return res.json({ email: email, name: user.name, phone: user.phone, token });
   }
 }
