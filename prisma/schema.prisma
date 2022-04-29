@@ -14,22 +14,36 @@ model Customer {
   phone        String @unique
   passwordHash String
 
-  Chamado Chamado[]
+  Chamado  Chamado[]
+  Endereco Endereco[]
   @@map("customers")
+}
+
+model Endereco {
+  id          String   @id @default(uuid())
+  street      String
+  number      Int
+  city        String
+  complement  String
+  customer_id Customer @relation(fields: [customerId], references: [id])
+
+  customerId String
+  @@map("endereco")
 }
 
 model Chamado {
 
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   title       String
   description String
   images      String[]
   status      String
-  customer    Customer  @relation(fields: [customer_id], references: [id])
-  customer_id String
-  created_at  DateTime? @default(now())
-  Updated_at  DateTime? @default(now())
+  customer    Customer @relation(fields: [customerId], references: [id])
+
+  created_at DateTime? @default(now())
+  Updated_at DateTime? @default(now())
 
 
-  @@map("Chamados")
+  customerId String
+  @@map("chamados")
 }

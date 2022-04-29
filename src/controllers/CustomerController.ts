@@ -4,7 +4,7 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 export class CustomerController {
   async create(req: Request, res: Response) {
-    const { name, email, password, phone } = req.body;
+    const { name, email, password, phone, street, number, city, complement } = req.body;
     if (!name) {
       res.status(401).json({ message: "O nome e obrigatorio" });
       return;
@@ -50,8 +50,13 @@ export class CustomerController {
         phone: true,
       },
     });
+    const endereco = await prismaClient.endereco.create({
+      data: {
+        street: street, number: number, city: city, complement: complement, customerId: customer.id
+      }
+    })
 
-    return res.status(201).json(customer);
+    return res.status(201).json({ customer, endereco });
   }
   async auth(req: Request, res: Response) {
     const { email, password } = req.body;
@@ -75,8 +80,8 @@ export class CustomerController {
     if (!isValidPassword) {
       res.status(401).json({ message: "A senha esta incorreta!" });
     }
-    const token = jwt.sign({ name: user.name, email: email, id: user.id }, `${process.env.SECRET}`, {
-
+    const token = jwt.sign({ name: user.name, email: email }, `${process.env.SECRET}`, {
+      subject: user.id,
       expiresIn: "7d",
     });
 
