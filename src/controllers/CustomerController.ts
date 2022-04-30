@@ -5,6 +5,9 @@ import jwt from "jsonwebtoken";
 export class CustomerController {
   async create(req: Request, res: Response) {
     const { name, email, password, phone, street, number, city, complement } = req.body;
+
+
+
     if (!name) {
       res.status(401).json({ message: "O nome e obrigatorio" });
       return;
@@ -36,28 +39,59 @@ export class CustomerController {
       res.status(400).json({ message: "O telefone e obrigatorio" });
       return;
     }
-    const customer = await prismaClient.customer.create({
-      data: {
-        email,
-        passwordHash,
-        phone,
-        name,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-      },
-    });
-    const endereco = await prismaClient.endereco.create({
-      data: {
-        street: street, number: number, city: city, complement: complement, customerId: customer.id
-      }
-    })
+    if (req.file) {
+      const { originalname, filename: picture } = req.file;
+      const customer = await prismaClient.customer.create({
+        data: {
+          email,
+          passwordHash,
+          phone,
+          name,
+          picture
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+        },
+      });
+      const endereco = await prismaClient.endereco.create({
+        data: {
+          street: street, number: number, city: city, complement: complement, customerId: customer.id
+        }
 
-    return res.status(201).json({ customer, endereco });
+      })
+      return res.status(201).json({ customer, endereco });
+    } else {
+      const customer = await prismaClient.customer.create({
+        data: {
+          email,
+          passwordHash,
+          phone,
+          name,
+          picture: ''
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+        },
+      });
+      const endereco = await prismaClient.endereco.create({
+        data: {
+          street: street, number: number, city: city, complement: complement, customerId: customer.id
+        }
+      })
+
+      return res.status(201).json({ customer, endereco });
+    }
+
+
   }
+
+
   async auth(req: Request, res: Response) {
     const { email, password } = req.body;
     if (!email) {

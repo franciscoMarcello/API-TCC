@@ -8,21 +8,23 @@ datasource db {
 }
 
 model Customer {
-  id           String @id @default(uuid())
+  id           String     @id @default(uuid())
   name         String
-  email        String @unique
-  phone        String @unique
+  email        String     @unique
+  phone        String     @unique
   passwordHash String
+  picture      String?
+  tecnic       Boolean    @default(false)
+  Chamado      Chamado[]
+  Endereco     Endereco[]
 
-  Chamado  Chamado[]
-  Endereco Endereco[]
   @@map("customers")
 }
 
 model Endereco {
   id          String   @id @default(uuid())
   street      String
-  number      Int
+  number      String
   city        String
   complement  String
   customer_id Customer @relation(fields: [customerId], references: [id])

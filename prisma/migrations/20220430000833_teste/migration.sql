@@ -5,6 +5,8 @@ CREATE TABLE "customers" (
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "passwordHash" TEXT NOT NULL,
+    "picture" TEXT NOT NULL,
+    "tecnic" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "customers_pkey" PRIMARY KEY ("id")
 );
@@ -28,7 +30,6 @@ CREATE TABLE "chamados" (
     "description" TEXT NOT NULL,
     "images" TEXT[],
     "status" TEXT NOT NULL,
-    "customer_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "Updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "customerId" TEXT NOT NULL,
