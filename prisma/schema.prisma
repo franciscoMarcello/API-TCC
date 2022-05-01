@@ -14,38 +14,67 @@ model Customer {
   phone        String     @unique
   passwordHash String
   picture      String?
-  tecnic       Boolean    @default(false)
   Chamado      Chamado[]
   Endereco     Endereco[]
+  created_at   DateTime?  @default(now())
+  updated_at   DateTime?  @default(now())
+
 
   @@map("customers")
 }
 
 model Endereco {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   street      String
   number      String
   city        String
-  complement  String
-  customer_id Customer @relation(fields: [customerId], references: [id])
+  complement  String?
+  customer_id Customer?  @relation(fields: [customerId], references: [id])
+  
+  cep         String
+  created_at  DateTime? @default(now())
+  updated_at  DateTime? @default(now())
 
-  customerId String
+
+  customerId String?
+
+
   @@map("endereco")
 }
 
 model Chamado {
 
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
   description String
   images      String[]
   status      String
-  customer    Customer @relation(fields: [customerId], references: [id])
+  customer    Customer  @relation(fields: [customerId], references: [id])
 
-  created_at DateTime? @default(now())
-  Updated_at DateTime? @default(now())
+  created_at  DateTime? @default(now())
+  updated_at  DateTime? @default(now())
+
 
 
   customerId String
   @@map("chamados")
+
 }
+
+// model Tecnic {
+//   id           String    @id @default(uuid())
+//   name         String
+//   email        String    @unique
+//   phone        String    @unique
+//   passwordHash String
+//   picture      String?
+//   rating       Float?
+//   created_at   DateTime? @default(now())
+//   updated_at   DateTime? @default(now())
+
+
+
+//   @@map("tecnic")
+//   Endereco Endereco[]
+//   Chamado  Chamado[]
+// }

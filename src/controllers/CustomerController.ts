@@ -2,11 +2,19 @@ import { Request, Response } from "express";
 import { prismaClient } from "../database/prismaClient";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-export class CustomerController {
+class CustomerController {
   async create(req: Request, res: Response) {
-    const { name, email, password, phone, street, number, city, complement } = req.body;
-
-
+    const {
+      name,
+      email,
+      password,
+      phone,
+      street,
+      number,
+      city,
+      complement,
+      cep,
+    } = req.body;
 
     if (!name) {
       res.status(401).json({ message: "O nome e obrigatorio" });
@@ -39,6 +47,23 @@ export class CustomerController {
       res.status(400).json({ message: "O telefone e obrigatorio" });
       return;
     }
+    if (!street) {
+      res.status(400).json({ message: "A rua e obrigatorio" });
+      return;
+    }
+    if (!city) {
+      res.status(400).json({ message: "A cidade e obrigatoria" });
+      return;
+    }
+    if (!number) {
+      res.status(400).json({ message: "O numero e obrigatorio" });
+      return;
+    }
+    if (!cep) {
+      res.status(400).json({ message: "O cep e obrigatorio" });
+      return;
+    }
+
     if (req.file) {
       const { originalname, filename: picture } = req.file;
       const customer = await prismaClient.customer.create({
@@ -47,22 +72,21 @@ export class CustomerController {
           passwordHash,
           phone,
           name,
-          picture
+          picture,
+          Endereco: {
+            create: { street, number, city, complement, cep },
+          },
         },
         select: {
           id: true,
           name: true,
           email: true,
           phone: true,
+          Endereco: true,
         },
       });
-      const endereco = await prismaClient.endereco.create({
-        data: {
-          street: street, number: number, city: city, complement: complement, customerId: customer.id
-        }
 
-      })
-      return res.status(201).json({ customer, endereco });
+      return res.status(201).json({ customer });
     } else {
       const customer = await prismaClient.customer.create({
         data: {
@@ -70,27 +94,23 @@ export class CustomerController {
           passwordHash,
           phone,
           name,
-          picture: ''
+          picture: "",
+          Endereco: {
+            create: { street, number, city, complement, cep },
+          },
         },
         select: {
           id: true,
           name: true,
           email: true,
           phone: true,
+          Endereco: true,
         },
       });
-      const endereco = await prismaClient.endereco.create({
-        data: {
-          street: street, number: number, city: city, complement: complement, customerId: customer.id
-        }
-      })
 
-      return res.status(201).json({ customer, endereco });
+      return res.status(201).json({ customer });
     }
-
-
   }
-
 
   async auth(req: Request, res: Response) {
     const { email, password } = req.body;
@@ -114,11 +134,21 @@ export class CustomerController {
     if (!isValidPassword) {
       res.status(401).json({ message: "A senha esta incorreta!" });
     }
-    const token = jwt.sign({ name: user.name, email: email }, `${process.env.SECRET}`, {
-      subject: user.id,
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { name: user.name, email: email },
+      `${process.env.SECRET}`,
+      {
+        subject: user.id,
+        expiresIn: "7d",
+      }
+    );
 
-    return res.json({ email: email, name: user.name, phone: user.phone, token });
+    return res.json({
+      email: email,
+      name: user.name,
+      phone: user.phone,
+      token,
+    });
   }
 }
+export { CustomerController };
