@@ -64,52 +64,27 @@ class CustomerController {
       return;
     }
 
-    if (req.file) {
-      const { originalname, filename: picture } = req.file;
-      const customer = await prismaClient.customer.create({
-        data: {
-          email,
-          passwordHash,
-          phone,
-          name,
-          picture,
-          Endereco: {
-            create: { street, number, city, complement, cep },
-          },
+    const customer = await prismaClient.customer.create({
+      data: {
+        email,
+        passwordHash,
+        phone,
+        name,
+        picture: "",
+        Endereco: {
+          create: { street, number, city, complement, cep },
         },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          phone: true,
-          Endereco: true,
-        },
-      });
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        Endereco: true,
+      },
+    });
 
-      return res.status(201).json({ customer });
-    } else {
-      const customer = await prismaClient.customer.create({
-        data: {
-          email,
-          passwordHash,
-          phone,
-          name,
-          picture: "",
-          Endereco: {
-            create: { street, number, city, complement, cep },
-          },
-        },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          phone: true,
-          Endereco: true,
-        },
-      });
-
-      return res.status(201).json({ customer });
-    }
+    return res.status(201).json({ customer });
   }
 
   async auth(req: Request, res: Response) {

@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import { prismaClient } from "../database/prismaClient";
 class ChamadoController {
   async create(req: Request, res: Response) {
-    const { title, description, customerId } = req.body;
+    const { title, description, customerId, category } = req.body;
+
     const status = "Aberto";
     if (!title) {
       res.status(401).json({ message: "O Titulo e obrigatorio" });
@@ -23,7 +24,7 @@ class ChamadoController {
         status,
         description,
         customerId,
-        
+        category,
       },
     });
 

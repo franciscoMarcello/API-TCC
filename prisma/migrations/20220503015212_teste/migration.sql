@@ -22,8 +22,8 @@ CREATE TABLE "endereco" (
     "cep" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "customerId" TEXT NOT NULL,
-    "tecnicId" TEXT NOT NULL,
+    "customerId" TEXT,
+    "tecnicId" TEXT,
 
     CONSTRAINT "endereco_pkey" PRIMARY KEY ("id")
 );
@@ -35,10 +35,10 @@ CREATE TABLE "chamados" (
     "description" TEXT NOT NULL,
     "images" TEXT[],
     "status" TEXT NOT NULL,
+    "category" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "customerId" TEXT NOT NULL,
-    "tecnicId" TEXT NOT NULL,
 
     CONSTRAINT "chamados_pkey" PRIMARY KEY ("id")
 );
@@ -71,13 +71,10 @@ CREATE UNIQUE INDEX "tecnic_email_key" ON "tecnic"("email");
 CREATE UNIQUE INDEX "tecnic_phone_key" ON "tecnic"("phone");
 
 -- AddForeignKey
-ALTER TABLE "endereco" ADD CONSTRAINT "endereco_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "customers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "endereco" ADD CONSTRAINT "endereco_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "endereco" ADD CONSTRAINT "endereco_tecnicId_fkey" FOREIGN KEY ("tecnicId") REFERENCES "tecnic"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "endereco" ADD CONSTRAINT "endereco_tecnicId_fkey" FOREIGN KEY ("tecnicId") REFERENCES "tecnic"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "chamados" ADD CONSTRAINT "chamados_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "customers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "chamados" ADD CONSTRAINT "chamados_tecnicId_fkey" FOREIGN KEY ("tecnicId") REFERENCES "tecnic"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
