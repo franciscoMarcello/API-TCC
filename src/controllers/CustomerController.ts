@@ -107,7 +107,7 @@ class CustomerController {
     const isValidPassword = await bcryptjs.compare(password, user.passwordHash);
 
     if (!isValidPassword) {
-      res.status(401).json({ message: "A senha esta incorreta!" });
+      res.status(401).json({ message: "O usuário/senha esta incorreta!" });
     }
     const token = jwt.sign(
       { name: user.name, email: email },

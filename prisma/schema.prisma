@@ -17,27 +17,27 @@ model Customer {
   Chamado      Chamado[]
   Endereco     Endereco[]
   created_at   DateTime?  @default(now())
-  updated_at   DateTime?  @default(now())
+  updated_at   DateTime?  @updatedAt
 
 
   @@map("customers")
 }
 
 model Endereco {
-  id          String    @id @default(uuid())
-  street      String
-  number      String
-  city        String
-  complement  String?
-  customer    Customer?  @relation(fields: [customerId], references: [id])
-  tecnic      Tecnic? @relation(fields: [tecnicId], references: [id])
-  cep         String
-  created_at  DateTime? @default(now())
-  updated_at  DateTime? @default(now())
+  id         String    @id @default(uuid())
+  street     String
+  number     String
+  city       String
+  complement String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  tecnic     Tecnic?   @relation(fields: [tecnicId], references: [id])
+  cep        String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
 
 
   customerId String?
-  tecnicId String?
+  tecnicId   String?
 
 
   @@map("endereco")
@@ -45,22 +45,22 @@ model Endereco {
 
 model Chamado {
 
-  id          String    @id @default(uuid())
+  id          String @id @default(uuid())
   title       String
   description String
 
-  status      String
-  customer    Customer  @relation(fields: [customerId], references: [id])
-  tecnic      Tecnic?   @relation(fields: [tecnicId], references: [id])
-  category    String
-  created_at  DateTime? @default(now())
-  updated_at  DateTime? @default(now())
+  status     String
+  customer   Customer  @relation(fields: [customerId], references: [id])
+  tecnic     Tecnic?   @relation(fields: [tecnicId], references: [id])
+  category   String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
 
 
-  tecnicId     String?
+  tecnicId   String?
   customerId String
-  @@map("chamados")
 
+  @@map("chamados")
 }
 
 model Tecnic {
@@ -72,10 +72,10 @@ model Tecnic {
   picture      String?
   rating       Float?
   created_at   DateTime? @default(now())
-  updated_at   DateTime? @default(now())
+  updated_at   DateTime? @updatedAt
 
-  chamado   Chamado[]
+  chamado  Chamado[]
   endereco Endereco[]
+
   @@map("tecnic")
- 
 }

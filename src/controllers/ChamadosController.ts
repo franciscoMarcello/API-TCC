@@ -30,5 +30,37 @@ class ChamadoController {
 
     return res.status(201).json(chamado);
   }
+  async assumir(req: Request, res: Response) {
+
+    const { tecnicId, chamadoId } = req.body
+    const chamado = await prismaClient.chamado.update({
+      where: {
+        id: chamadoId
+      },
+      data: {
+        tecnicId: tecnicId,
+        status: "Em atendimento"
+      },
+      include: {
+        tecnic: {
+          select: {
+            name: true,
+            email: true,
+            phone: true
+          }
+        }
+      },
+
+
+    })
+    res.status(200).json(chamado)
+
+  }
+  async chamados(req: Request, res: Response) {
+    const chamados = await prismaClient.chamado.findMany()
+
+    return res.status(200).json(chamados)
+  }
 }
+
 export { ChamadoController };

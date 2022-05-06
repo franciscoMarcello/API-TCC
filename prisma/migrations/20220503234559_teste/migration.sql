@@ -33,11 +33,11 @@ CREATE TABLE "chamados" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "images" TEXT[],
     "status" TEXT NOT NULL,
     "category" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "tecnicId" TEXT,
     "customerId" TEXT NOT NULL,
 
     CONSTRAINT "chamados_pkey" PRIMARY KEY ("id")
@@ -78,3 +78,6 @@ ALTER TABLE "endereco" ADD CONSTRAINT "endereco_tecnicId_fkey" FOREIGN KEY ("tec
 
 -- AddForeignKey
 ALTER TABLE "chamados" ADD CONSTRAINT "chamados_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "customers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "chamados" ADD CONSTRAINT "chamados_tecnicId_fkey" FOREIGN KEY ("tecnicId") REFERENCES "tecnic"("id") ON DELETE SET NULL ON UPDATE CASCADE;
