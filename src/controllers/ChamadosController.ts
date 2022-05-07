@@ -1,3 +1,4 @@
+import { prisma } from "@prisma/client";
 import { Request, Response } from "express";
 import { prismaClient } from "../database/prismaClient";
 class ChamadoController {
@@ -61,6 +62,28 @@ class ChamadoController {
 
     return res.status(200).json(chamados)
   }
+  async details(req: Request, res: Response) {
+    const { chamadoId } = req.body
+    const chamado = await prismaClient.chamado.findFirst({
+      where: {
+        id: chamadoId
+      },
+      include: {
+        customer: {
+          select: {
+            email: true,
+            name: true,
+            phone: true
+          }
+        }
+
+
+      }
+
+    })
+    return res.status(200).json(chamado)
+  }
+
 }
 
 export { ChamadoController };

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import { prismaClient } from "../database/prismaClient";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -124,6 +124,34 @@ class CustomerController {
       phone: user.phone,
       token,
     });
+  }
+  async me(req: Request, res: Response) {
+    const { customerId } = req.body
+    if (!customerId) {
+      res.status(400).json({ message: "usuario nao existe" })
+      return
+    }
+
+    const customer = await prismaClient.customer.findFirst({
+      where: {
+        id: customerId
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        Endereco: true,
+        phone: true,
+        Chamado: true
+      }
+
+    })
+    if (!customer) {
+      res.status(400).json({ message: "usuario nao existe" })
+    } else {
+      res.status(200).json(customer)
+    }
+
   }
 }
 export { CustomerController };

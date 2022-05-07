@@ -125,6 +125,33 @@ class TecnicController {
             token,
         });
     }
+    async me(req: Request, res: Response) {
+        const { tecnicId } = req.body
+        if (!tecnicId) {
+            res.status(400).json({ message: "usuario nao existe" })
+            return
+        }
 
+        const tecnic = await prismaClient.tecnic.findFirst({
+            where: {
+                id: tecnicId
+            },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                endereco: true,
+                phone: true,
+                chamado: true
+            }
+
+        })
+        if (!tecnic) {
+            res.status(400).json({ message: "usuario nao existe" })
+        } else {
+            res.status(200).json(tecnic)
+        }
+
+    }
 }
 export { TecnicController };
