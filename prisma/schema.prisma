@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  phone        String     @unique
+  passwordHash String
+  picture      String?
+  Chamado      Chamado[]
+  Endereco     Endereco[]
+  tecnic       Tecnic?
+  tecnicId     Boolean    @default(false)
+  created_at   DateTime?  @default(now())
+
+  updated_at DateTime? @updatedAt
+
+
+  @@map("customers")
+}
+
+model Endereco {
+  id         String    @id @default(uuid())
+  street     String
+  number     String
+  city       String
+  complement String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+
+  cep        String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+
+
+  customerId String?
+
+
+
+  @@map("endereco")
+}
+
+model Chamado {
+
+  id          String @id @default(uuid())
+  title       String
+  description String
+
+  status     String
+  customer   Customer  @relation(fields: [customerId], references: [id])
+  tecnic     String?
+  category   String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+
+
+  tecnicId   String?
+  customerId String
+
+  @@map("chamados")
+  Tecnic Tecnic? @relation(fields: [tecnicId], references: [id])
+}
+
+model Tecnic {
+  id         String    @id @default(uuid())
+  rating     Float?
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+  chamado    Chamado[]
+  tecnic     Customer  @relation(fields: [custumerId], references: [id])
+  custumerId String    @unique
+
+  @@map("tecnic")
+}
